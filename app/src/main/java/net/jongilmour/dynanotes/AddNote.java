@@ -1,6 +1,8 @@
 package net.jongilmour.dynanotes;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +27,7 @@ public class AddNote extends AppCompatActivity {
     Calendar c;
     String curDate;
     String curTime;
+    Vibrator v;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class AddNote extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("New Note");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         noteTitle = findViewById(R.id.txtNoteTitle);
         noteDetails = findViewById(R.id.txtNoteDetails);
@@ -59,7 +63,7 @@ public class AddNote extends AppCompatActivity {
         // Get the current date and time //
         c = Calendar.getInstance();
         curDate = c.get(Calendar.DAY_OF_MONTH) + "/" + (c.get(Calendar.MONTH) + 1) + "/" + c.get(Calendar.YEAR); // format dd/mm/yyyy, month index starts from 0 so +1 to get actual month
-        curTime = pad(c.get(Calendar.HOUR)) + ":" + pad(c.get(Calendar.MINUTE));
+        curTime = c.get(Calendar.HOUR) + ":" + pad(c.get(Calendar.MINUTE));
         Log.d("Date and Time", curDate + " " + curTime);
     }
 
@@ -83,11 +87,13 @@ public class AddNote extends AppCompatActivity {
             Note note = new Note(noteTitle.getText().toString(), noteDetails.getText().toString(), curDate, curTime);
             NoteDB db = new NoteDB(this);
             db.addNote(note);
+            v.vibrate(200);
             Toast.makeText(this, "note saved", Toast.LENGTH_SHORT).show();
             goToMain();
         }
 
         if (item.getItemId() == R.id.delete) {
+            v.vibrate(200);
             Toast.makeText(this, "note deleted", Toast.LENGTH_SHORT).show();
             goToMain();
         }

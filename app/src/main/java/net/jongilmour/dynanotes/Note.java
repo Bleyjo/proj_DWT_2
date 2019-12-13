@@ -28,7 +28,7 @@ public class Note {
         // This will be used when editing a previously-created note //
         this.id = id;
         this.title = title;
-        if (title == null){
+        if (title == null || title==""){
             this.title = "New note";
         }
         this.content = content;

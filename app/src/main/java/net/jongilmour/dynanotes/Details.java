@@ -1,7 +1,9 @@
 package net.jongilmour.dynanotes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +24,7 @@ public class Details extends AppCompatActivity {
     TextView mDetails;
     NoteDB db;
     Note note;
+    Vibrator v;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class Details extends AppCompatActivity {
         Intent i = getIntent();
         long id = i.getLongExtra("ID", 0);
         mDetails = findViewById(R.id.noteDesc);
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         db = new NoteDB(this);
         note = db.getNote(id);
@@ -71,6 +75,7 @@ public class Details extends AppCompatActivity {
         if (item.getItemId() == R.id.edit) {
             Intent i = new Intent(this, edit_note.class);
             i.putExtra("ID", note.getId());
+            v.vibrate(200);
             startActivity(i);
         }
         return super.onOptionsItemSelected(item);

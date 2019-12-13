@@ -1,6 +1,10 @@
 package net.jongilmour.dynanotes;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +27,7 @@ public class edit_note extends AppCompatActivity {
     String curTime;
     NoteDB db;
     Note note;
+    Vibrator v;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,7 @@ public class edit_note extends AppCompatActivity {
 
         getSupportActionBar().setTitle(note.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         noteTitle = findViewById(R.id.txtNoteTitle);
         noteDetails = findViewById(R.id.txtNoteDetails);
@@ -86,22 +92,21 @@ public class edit_note extends AppCompatActivity {
         return true;
     }
 
+    @RequiresApi(api = 26)
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.save) {
             note.setTitle(noteTitle.getText().toString());
             note.setContent(noteDetails.getText().toString());
             int id = db.editNote(note);
-            if(id == note.getId()){
-                Toast.makeText(this, "note updated", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "an unexpected error occurred when updating.", Toast.LENGTH_SHORT).show();
-            }
+            v.vibrate(200);
+            Toast.makeText(this, "note updated", Toast.LENGTH_SHORT).show();
             goToMain();
         }
 
         if (item.getItemId() == R.id.delete) {
             db.deleteNote(note.getId());
             goToMain();
+            v.vibrate(200);
             Toast.makeText(this, "note deleted", Toast.LENGTH_SHORT).show();
             goToMain();
         }
